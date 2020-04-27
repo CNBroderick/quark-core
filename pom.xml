@@ -29,9 +29,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:CNBroderick/vaadin-14-flow.git</connection>
-        <developerConnection>scm:git:git@github.com:CNBroderick/vaadin-14-flow.git</developerConnection>
-        <url>git@github.com:CNBroderick/vaadin-14-flow.git</url>
+        <connection>scm:git:git@github.com:CNBroderick/quark.git</connection>
+        <developerConnection>scm:git:git@github.com:CNBroderick/quark.git</developerConnection>
+        <url>git@github.com:CNBroderick/quark.git</url>
     </scm>
 
     <prerequisites>
@@ -152,8 +152,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>10</source>
+                    <target>10</target>
                 </configuration>
             </plugin>
         </plugins>

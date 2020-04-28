@@ -11,7 +11,6 @@
 
 package org.bklab.quark.service;
 
-import dataq.core.operation.OperationResult;
 import org.bklab.quark.common.request.IRequestFactory;
 import org.bklab.quark.common.request.Request;
 import org.bklab.quark.common.request.Response;
@@ -26,9 +25,9 @@ import java.util.function.Supplier;
 /*
  * if implements, insert flow code to implement class:
  *     private final List<Consumer<Exception>> exceptionConsumers = new ArrayList<>();
- *     private final List<Consumer<OperationResult>> saveListeners = new ArrayList<>();
+ *     private final List<Consumer<Response>> saveListeners = new ArrayList<>();
  */
-public interface RequestService<T extends RequestService<T>> extends HasSaveListeners<OperationResult, T>, HasExceptionConsumers<T> {
+public interface RequestService<T extends RequestService<T>> extends HasSaveListeners<Response, T>, HasExceptionConsumers<T> {
 
 
     String getCurrentUserId();
@@ -38,12 +37,12 @@ public interface RequestService<T extends RequestService<T>> extends HasSaveList
         return (T) this;
     }
 
-    default T addSuccessConsumer(Consumer<OperationResult> successConsumer) {
+    default T addSuccessConsumer(Consumer<Response> successConsumer) {
         if (successConsumer != null) getSaveListeners().add(successConsumer);
         return (T) this;
     }
 
-    default void callSaveListeners(OperationResult operationResult) {
+    default void callSaveListeners(Response operationResult) {
         getSaveListeners().forEach(x -> x.accept(operationResult));
     }
 

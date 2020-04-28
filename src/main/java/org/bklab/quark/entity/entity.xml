@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entities>
+    <schema name="FunctionPoint" table-name="tb_function_point">
+        <properties>
+            <property name="id" type="int" min="0" primary="true" readonly="true" auto-increase="true" field-name="d_id"/>
+            <property name="functionId" type="int" min="0" required="true"/>
+            <property name="pointId" type="int" min="0" required="true"/>
+            <property name="name" type="string" min-length="1" max-length="45"/>
+            <property name="description" type="string" min-length="1" max-length="512"/>
+            <property name="type" type="string">
+                <values>
+                    <value>查询</value>
+                    <value>修改</value>
+                    <value>导出</value>
+                    <value>其他</value>
+                    <value>新建</value>
+                </values>
+            </property>
+            <property name="dependFunction" type="json-array"/>
+        </properties>
+    </schema>
+
+</entities>

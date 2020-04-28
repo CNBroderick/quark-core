@@ -77,8 +77,11 @@ public class RunningTime {
     }
 
     public RunningTime print() {
+        return print("running time");
+    }
+    public RunningTime print(String name) {
         StackTraceElement stack = (new Throwable()).getStackTrace()[1];
-        System.err.println(stack.getClassName() + ':' +
+        System.err.println(name + "\t" + stack.getClassName() + ':' +
                 stack.getMethodName() + '\t' +
                 stack.getLineNumber() + "()" + ':' + System.lineSeparator() + '\t' +
                 "当前用时：" + time() + System.lineSeparator());

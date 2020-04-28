@@ -11,8 +11,10 @@
 
 package org.bklab.quark.util.search.common;
 
-import org.bklab.util.LocalDateTools;
-import org.bklab.util.StringExtractor;
+
+import dataq.core.data.schema.Record;
+import org.bklab.quark.util.LocalDateTools;
+import org.bklab.quark.util.StringExtractor;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

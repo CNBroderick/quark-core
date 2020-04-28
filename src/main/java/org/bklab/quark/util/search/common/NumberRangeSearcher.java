@@ -6,7 +6,8 @@
 
 package org.bklab.quark.util.search.common;
 
-import org.bklab.util.StringExtractor;
+
+import org.bklab.quark.util.StringExtractor;
 
 public class NumberRangeSearcher {
     public boolean match(double number, String keyword) {

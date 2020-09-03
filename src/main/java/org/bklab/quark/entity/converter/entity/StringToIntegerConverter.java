@@ -1,7 +1,6 @@
-package org.bklab.quark.entity.converter;
+package org.bklab.quark.entity.converter.entity;
 
-import org.bklab.quark.entity.StringToEntityConverter;
-import org.bklab.quark.util.StringExtractor;
+import org.bklab.quark.util.text.StringExtractor;
 
 public class StringToIntegerConverter implements StringToEntityConverter<Integer> {
     @Override

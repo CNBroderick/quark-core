@@ -1,19 +1,20 @@
 package org.bklab.quark.entity;
 
-import org.bklab.quark.service.JdbcConnectionManager;
+import org.bklab.quark.entity.dao.EntityDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Collection;
 
 public class Entity implements Serializable {
+
+    public final static String ENTITY_INSTANCE_ID = "entityInstanceId";
 
     private final EntitySchema schema;
     private final String name;
     private long entityInstanceId;
-    private Connection connection;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public Entity(EntitySchema schema) {
         this.schema = schema;
@@ -27,45 +28,36 @@ public class Entity implements Serializable {
 
     public Entity setEntityInstanceId(long entityInstanceId) {
         this.entityInstanceId = entityInstanceId;
-        this.schema.setValue("entityInstanceId", entityInstanceId);
+        this.schema.setValue(ENTITY_INSTANCE_ID, entityInstanceId);
         return this;
     }
 
-    public Entity nextEntityInstanceId() {
-        try {
-            Connection connection = getConnection();
+    public EntityDao dao() {
+        return new EntityDao(this);
+    }
 
-            execute(connection.prepareStatement("UPDATE tb_instance_id SET d_id = d_id + 1 WHERE d_name = 'entity';"));
-            connection.commit();
-            PreparedStatement statement = connection.prepareStatement("SELECT d_id FROM tb_instance_id WHERE d_name = 'entity';");
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) setEntityInstanceId(resultSet.getLong("d_id"));
-            resultSet.close();
-            statement.close();
-            connection.close();
+    public EntitySchema getSchema() {
+        return schema;
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Collection<EntityProperty<?>> properties() {
+        return schema.getProperties().values();
+    }
 
+    public <T> Entity value(String name, T value) {
+        schema.setValue(name, value);
         return this;
     }
 
-    private void execute(PreparedStatement statement, Object... parameters) throws SQLException {
-        execute(true, statement, parameters);
+    public <T> EntityProperty<T> getProperty(String name) {
+        return schema.get(name);
     }
 
-    private void execute(boolean commit, PreparedStatement statement, Object... parameters) throws SQLException {
-        for (int i = 0; i < parameters.length; i++) {
-            statement.setObject(i + 1, parameters[i]);
-        }
-        statement.execute();
-        statement.close();
+    public <T> T getValue(String name) {
+        return schema.getValue(name);
     }
 
-    private Connection getConnection() {
-        return JdbcConnectionManager.getConnection();
+    public String getName() {
+        return name;
     }
-
-
 }

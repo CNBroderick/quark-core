@@ -2,6 +2,7 @@ package org.bklab.quark.entity;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 public class EntitySchema {
@@ -11,14 +12,26 @@ public class EntitySchema {
     private String tableName;
 
     {
-        EntityProperty<Long> entityInstanceId = new EntityProperty<>("entityInstanceId", Long.class)
-                .setDefaultValue("-1").setReadonly(true).setEntityConverter(EntityConverterManager.getInstance().apply(Long.class));
+        EntityProperty<Long> entityInstanceId = new EntityProperty<>(Entity.ENTITY_INSTANCE_ID, Long.class)
+                .setDefaultValue("-1").setReadonly(true).setCaption("实例id(系统自动生成)").setFieldDefault("-1")
+                .setFieldType("int(64)").setEntityConverter(EntityConverterManager.getInstance().apply(Long.class));
         properties.put("entityInstanceId", entityInstanceId);
     }
 
     public long getEntityInstanceId() {
-        EntityProperty<Long> property = get("entityInstanceId");
-         return property.value();
+        EntityProperty<Long> property = get(Entity.ENTITY_INSTANCE_ID);
+        return property.value();
+    }
+
+    public boolean hasAutoIncrease() {
+        return properties.values().stream().anyMatch(EntityProperty::isAutoIncrease);
+    }
+
+    public <T> EntitySchema setAutoIncreaseValue(T value) {
+        for (EntityProperty<?> property : properties.values()) {
+            if (property.isAutoIncrease()) setValue(property.getName(), value);
+        }
+        return this;
     }
 
     public int size() {
@@ -33,6 +46,10 @@ public class EntitySchema {
     public <T> EntityProperty<T> get(String propertyName) {
         //noinspection unchecked
         return (EntityProperty<T>) properties.get(propertyName);
+    }
+
+    public <T> EntityProperty<T> property(String propertyName) {
+        return get(propertyName);
     }
 
     public <T> T getValue(String propertyName) {
@@ -73,6 +90,19 @@ public class EntitySchema {
         schema.tableName = tableName;
         properties.forEach((k, v) -> schema.addProperty(v.copy()));
         return schema;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EntitySchema)) return false;
+        EntitySchema schema = (EntitySchema) o;
+        return getName().equals(schema.getName()) && getTableName().equals(schema.getTableName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getProperties(), getName(), getTableName());
     }
 
     @Override

@@ -1,20 +1,7 @@
-/*
- * Copyright (c) 2008 - 2020. - Broderick Labs.
- * Author: Broderick Johansson
- * E-mail: z@bkLab.org
- * Modify date：2020-03-25 13:23:20
- * _____________________________
- * Project name: vaadin-14-flow
- * Class name：org.bklab.util.search.common.KeyWordSearcher
- * Copyright (c) 2008 - 2020. - Broderick Labs.
- */
-
 package org.bklab.quark.util.search.common;
 
-
 import dataq.core.data.schema.Record;
-import org.bklab.quark.util.LocalDateTools;
-import org.bklab.quark.util.StringExtractor;
+import org.bklab.quark.util.time.LocalDateTools;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,18 +9,22 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-public class KeyWordSearcher<T> {
+@SuppressWarnings("Duplicates")
+public class KeyWordSearcher<T> implements BiFunction<String, Collection<T>, Collection<T>>, Predicate<String> {
 
     private final T entity;
 
     public KeyWordSearcher(T entity) {
         this.entity = entity;
+    }
+
+    public KeyWordSearcher() {
+        this.entity = null;
     }
 
     public boolean matchJava5(String keyword) {
@@ -66,33 +57,8 @@ public class KeyWordSearcher<T> {
                         if (skipSearch != null && skipSearch.skip()) {
                             return false;
                         }
-                        if (o instanceof String)
+                        if (o instanceof String || o instanceof Number)
                             return String.valueOf(o).toLowerCase().contains(keyword.toLowerCase());
-                        if (o instanceof Number) {
-                            double number = ((Number) o).doubleValue();
-                            try {
-                                if (number == Double.parseDouble(keyword)) {
-                                    return true;
-                                }
-                            } catch (Exception e) {
-                                Predicate<Double> ge = d -> number >= d;
-                                Predicate<Double> g = d -> number > d;
-                                Predicate<Double> eq = d -> number == d;
-                                Predicate<Double> le = d -> number <= d;
-                                Predicate<Double> l = d -> number < d;
-                                if (keyword.startsWith(">=") && ge.test(StringExtractor.parseDouble(keyword)))
-                                    return true;
-                                if (keyword.startsWith(">") && g.test(StringExtractor.parseDouble(keyword)))
-                                    return true;
-                                if (keyword.startsWith("=") && eq.test(StringExtractor.parseDouble(keyword)))
-                                    return true;
-                                if (keyword.startsWith("<=") && le.test(StringExtractor.parseDouble(keyword)))
-                                    return true;
-                                if (keyword.startsWith("<") && l.test(StringExtractor.parseDouble(keyword)))
-                                    return true;
-                            }
-                            return false;
-                        }
                         if (o instanceof Collection || o.getClass().isEnum())
                             return o.toString().toLowerCase().contains(keyword.toLowerCase());
                         if (o instanceof LocalDate) {
@@ -131,6 +97,21 @@ public class KeyWordSearcher<T> {
                         return false;
                     }
                 });
+    }
+
+    @Override
+    public Collection<T> apply(String keyword, Collection<T> ts) {
+        if (keyword == null || ts == null) return ts;
+        List<T> list = new ArrayList<>();
+        ts.stream().filter(t -> new KeyWordSearcher<>(t).match(keyword)).forEach(list::add);
+        ts.clear();
+        ts.addAll(list);
+        return ts;
+    }
+
+    @Override
+    public boolean test(String keyword) {
+        return match(keyword);
     }
 
     @Retention(RetentionPolicy.RUNTIME)

@@ -1,8 +1,7 @@
-package org.bklab.quark.entity.converter;
+package org.bklab.quark.entity.converter.entity;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.bklab.quark.entity.StringToEntityConverter;
 
 public class StringToJsonConverter implements StringToEntityConverter<JsonObject> {
     @Override

@@ -106,6 +106,8 @@ public interface RequestService<T extends RequestService<T>> extends HasSaveList
             callExceptionConsumers(response.getException());
         } else if (response.isNotFound()) {
             callExceptionConsumers(new NoSuchElementException("not found."));
+        } else if(response.isSuccess()) {
+            callSaveListeners(response);
         }
 
         return response.asObject();

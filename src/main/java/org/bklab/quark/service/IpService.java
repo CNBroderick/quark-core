@@ -5,9 +5,8 @@ import com.google.gson.JsonObject;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import dataq.core.operation.OperationResult;
 import org.bklab.quark.util.LocationUtil;
-import org.bklab.quark.util.SM4Util;
+import org.bklab.quark.util.security.SM4Util;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,11 +39,7 @@ public class IpService implements Service<IpService> {
 
             MysqlDataSource mysqlDataSource = new MysqlDataSource();
             mysqlDataSource.setUseSSL(true);
-            mysqlDataSource.setRequireSSL(true);
 
-            mysqlDataSource.setClientCertificateKeyStoreType("jks");
-            mysqlDataSource.setClientCertificateKeyStoreUrl("file:/" + System.getProperty("user.dir") + File.separator + "retailer" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "cert" + File.separator + "ApsaraDB-CA-Chain.jks");
-            mysqlDataSource.setClientCertificateKeyStorePassword("apsaradb");
             mysqlDataSource.setCharacterEncoding("UTF-8");
             mysqlDataSource.setCharacterSetResults("UTF-8");
 
@@ -110,9 +105,10 @@ public class IpService implements Service<IpService> {
         try {
             JsonObject o = LocationUtil.getAddressFromIp(ip);
             if (o != null) {
-                String city = Optional.ofNullable(o.get("city")).filter(JsonElement::isJsonObject).map(JsonElement::getAsString).orElse(null);
-                String province = Optional.ofNullable(o.get("province")).filter(JsonElement::isJsonObject).map(JsonElement::getAsString).orElse(null);
+                String city = Optional.ofNullable(o.get("city")).filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsString).orElse(null);
+                String province = Optional.ofNullable(o.get("province")).filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsString).orElse(null);
                 String country = city == null ? "" : "中国";
+                if (city == null) return ip;
                 new Thread(() -> save(ip, country, province, city)).start();
                 return city;
             }

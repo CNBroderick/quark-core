@@ -1,7 +1,7 @@
 package org.bklab.quark.entity;
 
 import com.google.gson.JsonArray;
-import org.bklab.quark.entity.converter.*;
+import org.bklab.quark.entity.converter.entity.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

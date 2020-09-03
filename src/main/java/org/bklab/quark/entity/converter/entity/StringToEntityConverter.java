@@ -1,4 +1,4 @@
-package org.bklab.quark.entity;
+package org.bklab.quark.entity.converter.entity;
 
 import java.util.function.Function;
 

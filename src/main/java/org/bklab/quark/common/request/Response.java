@@ -5,6 +5,7 @@ import dataq.core.data.schema.Recordset;
 import dataq.core.operation.OperationResult;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -97,8 +98,8 @@ public class Response {
     }
 
     public <T> List<T> asList(Class<T> tClass) {
-        if (successData instanceof List<?>) {
-            return ((List<?>) successData).stream().filter(tClass::isInstance)
+        if (successData instanceof Collection<?>) {
+            return ((Collection<?>) successData).stream().filter(tClass::isInstance)
                     .map(tClass::cast).collect(Collectors.toList());
         }
         return new ArrayList<>();

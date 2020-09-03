@@ -3,6 +3,9 @@ package org.bklab.quark.entity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dataq.core.xml.XmlObject;
+import org.bklab.quark.entity.converter.entity.StringToEntityConverter;
+import org.bklab.quark.entity.converter.saver.DefaultSaveConverter;
+import org.bklab.quark.entity.converter.saver.EntitySaveConverter;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -93,11 +96,16 @@ public class EntitySchemaFactory implements Function<String, EntitySchema> {
                 "或类在包java.util, java.time, java.lang下", "entities", "schema", "properties", "property");
 
         EntityProperty<?> entityProperty = new EntityProperty<>(name, target)
+                .setFieldType(xmlObject.getString("filed-type", null))
                 .setPrimary(Boolean.parseBoolean(xmlObject.getString("primary", "false")))
                 .setReadonly(Boolean.parseBoolean(xmlObject.getString("readonly", "false")))
                 .setAutoIncrease(Boolean.parseBoolean(xmlObject.getString("auto-increase", "false")))
-                .setRequired(Boolean.parseBoolean(xmlObject.getString("required", "false")))
-                .setDefaultValue(xmlObject.getString("defaultValue", null));
+                .setNotnull(Boolean.parseBoolean(xmlObject.getString("notnull", "false")))
+                .setUnique(Boolean.parseBoolean(xmlObject.getString("unique", "false")))
+                .setDefaultValue(xmlObject.getString("default-value", null))
+                .setFieldDefault(xmlObject.getString("field-default", null))
+                .setCaption(xmlObject.getString("caption", null))
+                ;
 
         Optional.ofNullable(xmlObject.getString("filed-name", null)).ifPresent(entityProperty::setFieldName);
 
@@ -112,30 +120,62 @@ public class EntitySchemaFactory implements Function<String, EntitySchema> {
             }
         }
 
-        String converter = xmlObject.getString("converter", null);
-        if (converter != null) {
+        String entityConverter = xmlObject.getString("entity-converter", null);
+        if (entityConverter != null) {
             try {
-                Class<StringToEntityConverter<?>> converterClass = getConverterClass(converter);
+                Class<StringToEntityConverter<?>> converterClass = getEntityConverterClass(entityConverter);
                 if (converterClass != null)
                     entityProperty.setEntityConverter(converterClass.getDeclaredConstructor().newInstance());
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new XmlParseException(xmlObject, "未找到converter" + converter, "entities", "schema", "properties", "property");
+                throw new XmlParseException(xmlObject, "未找到 entity-converter" + entityConverter, "entities", "schema", "properties", "property");
             }
         } else {
             Optional.ofNullable(EntityConverterManager.getInstance().apply(target)).ifPresent(entityProperty::setEntityConverter);
         }
 
+        String saveConverter = xmlObject.getString("save-converter", null);
+        if (saveConverter != null) {
+            try {
+                Class<EntitySaveConverter<?>> saveConverterClass = getSaveConverterClass(saveConverter);
+                if (saveConverterClass != null)
+                    entityProperty.setSaveConverter(saveConverterClass.getDeclaredConstructor().newInstance());
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new XmlParseException(xmlObject, "未找到 save-converter" + entityConverter, "entities", "schema", "properties", "property");
+            }
+        } else {
+            entityProperty.setSaveConverter(new DefaultSaveConverter<>());
+        }
+
+        String fieldType = entityProperty.getFieldType();
+        if (fieldType == null)
+            throw new XmlParseException(xmlObject, "无法根据类型自动生成数据库属性类型，请使用<property name = \"" + name + "\" type = \"" + type + "\" filed-type =? >属性手动指定。", "entities", "schema", "properties", "property", "field-type");
+        entityProperty.setFieldType(fieldType);
+
+        String caption = entityProperty.getCaption();
+        if (caption != null && caption.contains("'")) {
+            throw new XmlParseException(xmlObject, "property --> caption属性不能包含单引号。", "entities", "schema", "properties", "property", "caption");
+        }
+
+        if(entityProperty.isAutoIncrease() && !entityProperty.isPrimary()) {
+            throw new XmlParseException(xmlObject, "property --> auto-increase 属性必须是 primary。", "entities", "schema", "properties", "property", "auto-increase");
+        }
+
+        if(entityProperty.isAutoIncrease() && entityProperty.getDefaultValue() != null) {
+            throw new XmlParseException(xmlObject, "property --> auto-increase 不能有属性：default-value 与 field-default。", "entities", "schema", "properties", "property", "auto-increase");
+        }
+
         return entityProperty;
     }
 
-    private Class<StringToEntityConverter<?>> getConverterClass(String name) {
+    private Class<StringToEntityConverter<?>> getEntityConverterClass(String name) {
         Class<?> c = null;
         try {
             c = Class.forName(name);
         } catch (ClassNotFoundException e) {
             try {
-                c = Class.forName(getClass().getPackageName() + ".converter." + name);
+                c = Class.forName(getClass().getPackageName() + ".converter.entity." + name);
             } catch (ClassNotFoundException ex) {
                 e.printStackTrace();
                 ex.printStackTrace();
@@ -144,6 +184,25 @@ public class EntitySchemaFactory implements Function<String, EntitySchema> {
         if (c != null) {
             //noinspection unchecked
             return (Class<StringToEntityConverter<?>>) c;
+        }
+        return null;
+    }
+
+    private Class<EntitySaveConverter<?>> getSaveConverterClass(String name) {
+        Class<?> c = null;
+        try {
+            c = Class.forName(name);
+        } catch (ClassNotFoundException e) {
+            try {
+                c = Class.forName(getClass().getPackageName() + ".converter.saver." + name);
+            } catch (ClassNotFoundException ex) {
+                e.printStackTrace();
+                ex.printStackTrace();
+            }
+        }
+        if (c != null) {
+            //noinspection unchecked
+            return (Class<EntitySaveConverter<?>>) c.asSubclass(EntitySaveConverter.class);
         }
         return null;
     }

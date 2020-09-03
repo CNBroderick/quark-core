@@ -4,7 +4,7 @@
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
-package org.bklab.quark.util;
+package org.bklab.quark.util.number;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,6 +12,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class DigitalFormatter {
 
@@ -52,7 +54,11 @@ public class DigitalFormatter {
     }
 
     public String toFormatted() {
-        return DecimalFormat.getInstance(Locale.CHINA).format(number);
+
+        return minimumFractionDigits == 0
+                ? DecimalFormat.getInstance(Locale.CHINA).format(number)
+                : new DecimalFormat("#,##0." + IntStream.range(0, minimumFractionDigits)
+                .mapToObj(r -> "0").collect(Collectors.joining())).format(number);
     }
 
     public String toPercentage() {
@@ -94,7 +100,7 @@ public class DigitalFormatter {
 
     public String toDataSize() {
         double size = number.doubleValue();
-        if (size <= 0) return "0";
+        if (size <= 0) return "0 KB";
         final String[] units = new String[]{"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         if (digitGroups >= units.length) digitGroups = units.length - 1;

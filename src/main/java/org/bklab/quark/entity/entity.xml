@@ -2,12 +2,12 @@
 <entities>
     <schema name="FunctionPoint" table-name="tb_function_point">
         <properties>
-            <property name="id" type="int" min="0" primary="true" readonly="true" auto-increase="true" field-name="d_id"/>
-            <property name="functionId" type="int" min="0" required="true"/>
-            <property name="pointId" type="int" min="0" required="true"/>
-            <property name="name" type="string" min-length="1" max-length="45"/>
-            <property name="description" type="string" min-length="1" max-length="512"/>
-            <property name="type" type="string">
+            <property name="id" type="int" caption="编号" min="0" unique="true" primary="true" readonly="true" auto-increase="true" field-name="d_id"/>
+            <property name="functionId" type="int" caption="菜单id" min="0" notnull="true"/>
+            <property name="pointId" type="int" caption="功能点id" min="0" notnull="true"/>
+            <property name="name" type="string" caption="功能点名称" min-length="1" max-length="45"/>
+            <property name="description" caption="描述" type="string" min-length="1" max-length="512"/>
+            <property name="type" type="string" caption="类型"  default-value="查询">
                 <values>
                     <value>查询</value>
                     <value>修改</value>
@@ -16,7 +16,8 @@
                     <value>新建</value>
                 </values>
             </property>
-            <property name="dependFunction" type="json-array"/>
+            <property name="dependFunction" caption="依赖功能点id" type="json-array"/>
+            <property name="updateTime" type="LocalDateTime" caption="更新时间" field-default="now()" />
         </properties>
     </schema>
 

@@ -5,18 +5,39 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class PrepareStatementHelper {
 
     private final Logger logger;
     private final PreparedStatement statement;
+    private boolean closeAfterExecute = false;
 
     public PrepareStatementHelper(PreparedStatement statement) {
         this.statement = statement;
-        Class<? extends StackTraceElement> aClass = (new Throwable()).getStackTrace()[2].getClass();
-        this.logger = LoggerFactory.getLogger(aClass == null ? getClass() : aClass);
+        this.logger = LoggerFactory.getLogger(Optional.of(new Throwable().getStackTrace())
+                .<Class<?>>map(stackTrace -> stackTrace[Math.min(stackTrace.length - 1, 2)].getClass()).orElse(getClass()));
     }
 
+    public PrepareStatementHelper(PreparedStatement statement, boolean closeAfterExecute) {
+        this.statement = statement;
+        Class<? extends StackTraceElement> aClass = (new Throwable()).getStackTrace()[2].getClass();
+        this.logger = LoggerFactory.getLogger(aClass == null ? getClass() : aClass);
+        this.closeAfterExecute = closeAfterExecute;
+    }
+
+    public PrepareStatementHelper notCloseAfterExecute() {
+        return closeAfterExecute(false);
+    }
+
+    public PrepareStatementHelper closeAfterExecute() {
+        return closeAfterExecute(true);
+    }
+
+    public PrepareStatementHelper closeAfterExecute(boolean closeAfterExecute) {
+        this.closeAfterExecute = closeAfterExecute;
+        return this;
+    }
 
     public int executeUpdate(Object... parameters) throws SQLException {
         return executeUpdate(true, parameters);
@@ -33,7 +54,7 @@ public class PrepareStatementHelper {
             logger.error("执行更新失败", e);
             throw e;
         } finally {
-            close();
+            if (closeAfterExecute) close();
         }
     }
 

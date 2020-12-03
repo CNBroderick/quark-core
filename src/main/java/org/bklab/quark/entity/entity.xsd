@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified"
+            version="1">
+    <xsd:annotation>
+        <xsd:documentation>
+            Broderick Labs -- entity.xml Schema Definition
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <!-- **************************************************** -->
+
+
+    <xsd:element name="entities">
+    </xsd:element>
+
+    <xsd:element name="schema">
+    </xsd:element>
+    
+    <xsd:element name="property">
+    </xsd:element>
+
+
+</xsd:schema>

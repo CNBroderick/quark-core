@@ -21,6 +21,10 @@ public class GsonJsonObjectUtil implements Supplier<JsonObject> {
         this.jsonObject = jsonObject == null ? new JsonObject() : jsonObject;
     }
 
+    public GsonJsonObjectUtil(Object object) {
+        this(new Gson().toJson(object));
+    }
+
     public static List<GsonJsonObjectUtil> fromArray(JsonArray array) {
         List<GsonJsonObjectUtil> jsonObjectUtils = new ArrayList<>();
         for (JsonElement element : array) {

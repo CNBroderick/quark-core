@@ -8,8 +8,22 @@ import dataq.core.data.schema.Schema;
 
 public class SchemaFactory {
 
-    private final Schema schema = new Schema();
-    private final Recordset recordset = new Recordset(schema);
+    private final Schema schema;
+    private final Recordset recordset;
+
+    public SchemaFactory() {
+        this.schema = new Schema();
+        this.recordset = new Recordset(schema);
+    }
+
+    public SchemaFactory(Schema schema) {
+        this(schema, new Recordset(schema));
+    }
+
+    public SchemaFactory(Schema schema, Recordset recordset) {
+        this.schema = schema;
+        this.recordset = recordset;
+    }
 
     public SchemaFactory unknownTypeField(String... names) {
         if (names != null) {

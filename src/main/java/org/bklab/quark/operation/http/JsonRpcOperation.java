@@ -23,7 +23,11 @@ public abstract class JsonRpcOperation<T> extends AbstractOperation {
 
     @Override
     public OperationResult doExecute() throws Exception {
-        return successResult(parseResult(doHttpRequest(getRequestUrl(), getMethod(), getBodyPublisher(), getBodyHandler())));
+        try {
+            return successResult(parseResult(doHttpRequest(getRequestUrl(), getMethod(), getBodyPublisher(), getBodyHandler())));
+        } catch (Exception e) {
+            return GenerateOperationResult.fromException(e);
+        }
     }
 
     protected abstract Object parseResult(T responseBody) throws Exception;
@@ -54,7 +58,9 @@ public abstract class JsonRpcOperation<T> extends AbstractOperation {
     public String getRequestUrl() {
         String host = getRequestHost();
         String uri = getRequestUri();
-        return uri.startsWith("/") || host.endsWith("/") ? host + uri : host + "/" + uri;
+        return host == null || uri == null
+               ? null
+               : uri.startsWith("/") || host.endsWith("/") ? host + uri : host + "/" + uri;
     }
 
     public abstract String getRequestHost();

@@ -55,4 +55,12 @@ public interface HasPreparedStatement {
             preparedStatement.setObject(column, parameter);
         }
     }
+
+    static HasPreparedStatement get() {
+        return Impl.instance;
+    }
+
+    class Impl implements HasPreparedStatement {
+        public static Impl instance = new Impl();
+    }
 }

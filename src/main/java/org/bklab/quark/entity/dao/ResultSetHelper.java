@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ResultSetHelper implements Supplier<ResultSet> {
@@ -205,6 +206,10 @@ public class ResultSetHelper implements Supplier<ResultSet> {
 
     public <T> void setEntityGeneratedKeys(T entity, BiConsumer<T, Integer> idConsumer) throws Exception {
         idConsumer.accept(entity, asInt());
+    }
+
+    public <T> void setEntityGeneratedKeys(Consumer<Integer> idConsumer) throws Exception {
+        idConsumer.accept(asInt());
     }
 
     @Override

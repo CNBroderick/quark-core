@@ -1,10 +1,7 @@
 package org.bklab.quark.util.schema;
 
-import dataq.core.data.schema.DataType;
-import dataq.core.data.schema.Field;
 import dataq.core.data.schema.Record;
-import dataq.core.data.schema.Recordset;
-import dataq.core.data.schema.Schema;
+import dataq.core.data.schema.*;
 
 public class SchemaFactory {
 
@@ -13,7 +10,7 @@ public class SchemaFactory {
 
     public SchemaFactory() {
         this.schema = new Schema();
-        this.recordset = new Recordset(schema);
+        this.recordset = new GenerateRecordset(schema);
     }
 
     public SchemaFactory(Schema schema) {
@@ -133,11 +130,11 @@ public class SchemaFactory {
     }
 
     public Record record() {
-        return new Record(schema);
+        return new GeneratedRecord(schema);
     }
 
     public RecordFactory recordFactory() {
-        return new RecordFactory(schema);
+        return new RecordFactory(record());
     }
 
     public Schema get() {

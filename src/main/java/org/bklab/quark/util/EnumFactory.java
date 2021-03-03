@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+@Deprecated
 public class EnumFactory<T extends Enum<T>> implements Supplier<T[]> {
 
     private final T[] instances;

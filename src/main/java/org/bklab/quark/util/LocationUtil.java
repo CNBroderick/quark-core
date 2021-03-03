@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Deprecated
 public class LocationUtil {
 
     private static final String BRODERICK_LAB_A_MAP_KEY = "79358dac22d76a984bda9d07b080f20b";

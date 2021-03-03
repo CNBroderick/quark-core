@@ -9,6 +9,7 @@ package org.bklab.quark.util;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused"})
+@Deprecated
 public class StringExtractor {
     public static float parseFloat(String s) {
         String f = getRealNumber(s);

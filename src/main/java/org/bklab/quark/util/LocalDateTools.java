@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
+@Deprecated
 public class LocalDateTools {
     public static LocalDate minLocalDate(LocalDate... localDates) {
         return Stream.of(localDates).filter(Objects::nonNull).min(Comparator.comparing(LocalDate::toEpochDay)).orElse(null);

@@ -25,6 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 import java.util.Arrays;
 
+@Deprecated
 public class SM4Util {
     private static final String ALGORITHM_NAME = "SM4";
     private static final String ALGORITHM_NAME_ECB_PADDING = "SM4/ECB/PKCS5Padding";

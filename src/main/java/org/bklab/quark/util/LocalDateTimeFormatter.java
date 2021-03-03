@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+@Deprecated
 public class LocalDateTimeFormatter {
 
     public static final DateTimeFormatter SHORT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

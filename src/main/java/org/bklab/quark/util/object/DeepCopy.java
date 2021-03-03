@@ -2,13 +2,10 @@ package org.bklab.quark.util.object;
 
 import com.google.gson.Gson;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 @SuppressWarnings("unchecked")
-public class DeepCopy<T> {
+public class DeepCopy<T extends Serializable> {
 
     private final T origin;
 
@@ -29,7 +26,7 @@ public class DeepCopy<T> {
         }
     }
 
-    private T viaGson() {
+    public T viaGson() {
         return new Gson().fromJson(new Gson().toJson(origin), (Class<T>) origin.getClass());
     }
 

@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Optional;
 
+@Deprecated
 public class PrepareStatementHelper {
 
     private final Logger logger;

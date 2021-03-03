@@ -20,6 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 
+@Deprecated
 public class UrlParameterParser {
 
     private final Map<String, List<String>> parameterMap;

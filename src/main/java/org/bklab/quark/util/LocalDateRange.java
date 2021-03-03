@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 
+@Deprecated
 @SuppressWarnings({"WeakerAccess", "FieldCanBeLocal"})
 public class LocalDateRange {
 

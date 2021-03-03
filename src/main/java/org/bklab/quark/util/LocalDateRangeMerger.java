@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
+@Deprecated
 public class LocalDateRangeMerger {
 
     public static List<LocalDateRange> forHead(List<LocalDateRange> localDateRanges, int combinedLength) {

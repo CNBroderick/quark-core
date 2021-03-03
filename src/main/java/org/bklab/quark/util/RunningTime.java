@@ -11,6 +11,7 @@
 
 package org.bklab.quark.util;
 
+@Deprecated
 public class RunningTime {
 
     private static final long ONE_DAY = 86400000;

@@ -57,12 +57,12 @@ public class EntityDao implements Supplier<Entity[]> {
 
 
 
-            long a = new PrepareStatementHelper(this.connection.prepareStatement(addSql)).executeUpdate();
+            long a = new PreparedStatementHelper(this.connection.prepareStatement(addSql)).executeUpdate();
             if (a < 1) {
                 insertInitToTableTbInstanceIdAndSet();
                 return this;
             }
-            id = new PrepareStatementHelper(this.connection.prepareStatement(getSql)).executeQuery().asLong();
+            id = new PreparedStatementHelper(this.connection.prepareStatement(getSql)).executeQuery().asLong();
             assert id > 0;
             for (int i = 0; i < entities.length; i++) {
                 entities[i].setEntityInstanceId(id - entities.length + i);
@@ -93,7 +93,7 @@ public class EntityDao implements Supplier<Entity[]> {
                 "         ROW_FORMAT = DYNAMIC;";
         ddl = ddl.replaceAll(" +", " ");
         try {
-            new PrepareStatementHelper(getConnection().prepareStatement(ddl)).executeUpdate();
+            new PreparedStatementHelper(getConnection().prepareStatement(ddl)).executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error("无法创建 tb_instance_id。", e);
@@ -104,8 +104,8 @@ public class EntityDao implements Supplier<Entity[]> {
         String insert = "INSERT IGNORE INTO tb_instance_id(d_name, d_id) VALUES ('entity', " + Math.max(entities.length, 1) + ");";
         String query = "SELECT d_id FROM tb_instance_id WHERE d_name = 'entity';";
         try {
-            new PrepareStatementHelper(getConnection().prepareStatement(insert)).executeUpdate();
-            long id = new PrepareStatementHelper(getConnection().prepareStatement(query)).executeQuery().asLong();
+            new PreparedStatementHelper(getConnection().prepareStatement(insert)).executeUpdate();
+            long id = new PreparedStatementHelper(getConnection().prepareStatement(query)).executeQuery().asLong();
             assert id > 0;
             for (int i = 0; i < entities.length; i++) {
                 entities[i].setEntityInstanceId(id - entities.length + i);
@@ -123,11 +123,11 @@ public class EntityDao implements Supplier<Entity[]> {
             savepoint = connection.setSavepoint();
             if (isBeforeDropTable) {
                 for (String ddl : generateDropTableDdl()) {
-                    new PrepareStatementHelper(connection.prepareStatement(ddl)).executeUpdate();
+                    new PreparedStatementHelper(connection.prepareStatement(ddl)).executeUpdate();
                 }
             }
             for (String ddl : generateCreateTableDdl()) {
-                new PrepareStatementHelper(connection.prepareStatement(ddl)).executeUpdate();
+                new PreparedStatementHelper(connection.prepareStatement(ddl)).executeUpdate();
             }
             connection.commit();
             connection.releaseSavepoint(savepoint);
@@ -198,7 +198,7 @@ public class EntityDao implements Supplier<Entity[]> {
                 row.append(" comment '").append(property.getCaption()).append("'");
             }
             row.append(", ");
-            sql.append(row.toString());
+            sql.append(row);
         }
 
         if (!primaries.isEmpty() || !uniques.isEmpty()) {

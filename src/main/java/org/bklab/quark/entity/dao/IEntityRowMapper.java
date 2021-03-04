@@ -27,18 +27,18 @@ public interface IEntityRowMapper<T> extends dataq.core.jdbc.IRowMapper {
     @Override
     T mapRow(ResultSet r) throws Exception;
 
-    default LocalDateTime getLocalDateTime(ResultSet r, String fileName) throws Exception {
-        if (r.getString(fileName) == null) return null;
-        return LocalDateTime.of(r.getDate(fileName).toLocalDate(), r.getTime(fileName).toLocalTime());
+    default LocalDateTime getLocalDateTime(ResultSet r, String filedName) throws Exception {
+        if (r.getString(filedName) == null) return null;
+        return LocalDateTime.of(r.getDate(filedName).toLocalDate(), r.getTime(filedName).toLocalTime());
     }
 
-    default LocalDate getLocalDate(ResultSet r, String fileName) throws Exception {
-        if (r.getString(fileName) == null) return null;
-        return r.getDate(fileName).toLocalDate();
+    default LocalDate getLocalDate(ResultSet r, String filedName) throws Exception {
+        if (r.getString(filedName) == null) return null;
+        return r.getDate(filedName).toLocalDate();
     }
 
-    default LocalTime getLocalTime(ResultSet r, String fileName) throws Exception {
-        if (r.getString(fileName) == null) return null;
-        return r.getTime(fileName).toLocalTime();
+    default LocalTime getLocalTime(ResultSet r, String filedName) throws Exception {
+        if (r.getString(filedName) == null) return null;
+        return r.getTime(filedName).toLocalTime();
     }
 }

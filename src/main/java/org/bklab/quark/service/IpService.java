@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import dataq.core.operation.OperationResult;
-import org.bklab.quark.util.LocationUtil;
+import org.bklab.quark.util.location.LocationUtil;
 import org.bklab.quark.util.security.SM4Util;
 
 import java.sql.Connection;

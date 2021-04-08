@@ -11,10 +11,19 @@
 
 package org.bklab.quark.entity.dao;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * public interface IEntityRowMapper<T> {
@@ -40,5 +49,27 @@ public interface IEntityRowMapper<T> extends dataq.core.jdbc.IRowMapper {
     default LocalTime getLocalTime(ResultSet r, String filedName) throws Exception {
         if (r.getString(filedName) == null) return null;
         return r.getTime(filedName).toLocalTime();
+    }
+
+    default List<String> getJsonArrayString(ResultSet r, String filedName) throws Exception {
+        return getJsonArrayElement(r, filedName).stream()
+                .map(jsonElement -> jsonElement.isJsonPrimitive() ? jsonElement.getAsString() : jsonElement.toString())
+                .collect(Collectors.toList());
+    }
+
+    default List<JsonElement> getJsonArrayElement(ResultSet r, String filedName) throws Exception {
+        List<JsonElement> list = new ArrayList<>();
+        for (JsonElement jsonElement : getJsonArray(r, filedName)) {
+            list.add(jsonElement);
+        }
+        return list;
+    }
+
+    default JsonArray getJsonArray(ResultSet r, String filedName) throws Exception {
+        return Optional.ofNullable(r.getString(filedName)).map(string -> new Gson().fromJson(string, JsonArray.class)).orElseGet(JsonArray::new);
+    }
+
+    default JsonObject getJsonObject(ResultSet r, String filedName) throws Exception {
+        return Optional.ofNullable(r.getString(filedName)).map(string -> new Gson().fromJson(string, JsonObject.class)).orElseGet(JsonObject::new);
     }
 }

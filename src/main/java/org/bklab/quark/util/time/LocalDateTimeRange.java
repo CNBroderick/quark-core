@@ -31,4 +31,21 @@ public class LocalDateTimeRange {
         }
         return localDateTimes;
     }
+
+    public LocalDateTimeRange getCoincide(LocalDateTime start, LocalDateTime end) {
+        return getCoincide(new LocalDateTimeRange(start, end));
+    }
+
+    public LocalDateTimeRange getCoincide(LocalDateTimeRange range) {
+        return min.isBefore(range.min) && range.min.isBefore(max) || min.isBefore(range.max) && range.max.isBefore(max)
+               ? new LocalDateTimeRange(new LocalDateTimeRange(min, range.min).max, new LocalDateTimeRange(max, range.max).min) : null;
+    }
+
+    public LocalDateTime getMin() {
+        return min;
+    }
+
+    public LocalDateTime getMax() {
+        return max;
+    }
 }

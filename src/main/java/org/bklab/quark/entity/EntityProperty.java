@@ -6,7 +6,7 @@ import dataq.util.DateTime;
 import org.bklab.quark.entity.converter.entity.StringToEntityConverter;
 import org.bklab.quark.entity.converter.saver.DefaultSaveConverter;
 import org.bklab.quark.entity.converter.saver.EntitySaveConverter;
-import org.bklab.quark.util.StringExtractor;
+import org.bklab.quark.util.text.StringExtractor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

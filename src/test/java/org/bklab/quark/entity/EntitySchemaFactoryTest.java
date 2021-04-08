@@ -5,7 +5,7 @@ import dataq.core.xml.XmlObject;
 import dataq.util.RandomUtil;
 import org.bklab.quark.entity.dao.EntityDao;
 import org.bklab.quark.service.JdbcConnectionManager;
-import org.bklab.quark.util.RunningTime;
+import org.bklab.quark.util.time.RunningTime;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;

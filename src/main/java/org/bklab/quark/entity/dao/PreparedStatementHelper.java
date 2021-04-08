@@ -101,11 +101,10 @@ public class PreparedStatementHelper {
 
     public <T> List<T> executeInsertBatch(boolean commit, List<T> entities, BiConsumer<T, Integer> idSetter) throws SQLException {
         int[] ids = executeBatch(commit);
-        for (int i = 0; i < ids.length; i++) {
-            if (entities.size() > i) {
-                T t = entities.get(i);
-                if (t != null) idSetter.accept(t, ids[i]);
-            }
+        try {
+            new ResultSetHelper(statement.getGeneratedKeys()).setEntityGeneratedKeys(entities, idSetter);
+        } catch (Exception e) {
+            LoggerFactory.getLogger(getClass()).error("设置自增ID失败。" + statement);
         }
         return entities;
     }

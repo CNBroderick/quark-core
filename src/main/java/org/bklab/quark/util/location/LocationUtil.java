@@ -1,10 +1,10 @@
 /*
- * Class: org.bklab.util.LocationUtil
+ * Class: org.bklab.quark.util.LocationUtil
  * Modify date: 2020/3/20 上午10:25
  * Copyright (c) 2008 - 2020. - Broderick Labs.
  */
 
-package org.bklab.quark.util;
+package org.bklab.quark.util.location;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Deprecated
 public class LocationUtil {
 
     private static final String BRODERICK_LAB_A_MAP_KEY = "79358dac22d76a984bda9d07b080f20b";
@@ -45,9 +44,9 @@ public class LocationUtil {
     public List<LocateResult> query(String keyword, String ip, String city) throws Exception {
 
         String url = "https:////restapi.amap.com/v3/assistant/inputtips" +
-                "?key=" + BRODERICK_LAB_A_MAP_KEY +
-                "&keywords=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8) +
-                "&type=";
+                     "?key=" + BRODERICK_LAB_A_MAP_KEY +
+                     "&keywords=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8) +
+                     "&type=";
         if (ip != null) {
             String res = queryAddressFromIp(ip);
             if (res.isEmpty()) {
@@ -80,9 +79,9 @@ public class LocationUtil {
                 JsonObject ipJson = new Gson().fromJson(response.body().string(), JsonObject.class);
                 return (Float.parseFloat(ipJson.get("rectangle").getAsString().split(";")[0].split(",")[0])
                         + Float.parseFloat(ipJson.get("rectangle").getAsString().split(";")[1].split(",")[0])) / 2
-                        + "," + (Float.parseFloat(ipJson.get("rectangle").getAsString().split(";")[0].split(",")[1])
-                        + Float.parseFloat(ipJson.get("rectangle").getAsString().split(";")[1].split(",")[1])) / 2
-                        + ';' + ipJson.get("adcode").getAsString();
+                       + "," + (Float.parseFloat(ipJson.get("rectangle").getAsString().split(";")[0].split(",")[1])
+                                + Float.parseFloat(ipJson.get("rectangle").getAsString().split(";")[1].split(",")[1])) / 2
+                       + ';' + ipJson.get("adcode").getAsString();
 
             }
         } catch (Exception ignore) {
@@ -103,8 +102,8 @@ public class LocationUtil {
         if (array.size() > 0) {
             JsonObject o = array.get(0).getAsJsonObject();
             return o.get("province").getAsString() + ","
-                    + o.get("city").getAsString() + ","
-                    + o.get("district").getAsString();
+                   + o.get("city").getAsString() + ","
+                   + o.get("district").getAsString();
         }
         return "";
     }
@@ -146,8 +145,8 @@ public class LocationUtil {
                                 .setAddress(getString(tip, "address"))
                                 .setTypeCode(getString(tip, "typecode"))
                                 .setCity(o.get("city") == null
-                                        ? "" : o.get("city").getAsJsonArray().size() <= 0
-                                        ? "" : o.get("city").getAsJsonArray().get(0).getAsString());
+                                         ? "" : o.get("city").getAsJsonArray().size() <= 0
+                                                ? "" : o.get("city").getAsJsonArray().get(0).getAsString());
                     }).collect(Collectors.toList());
         }
 
@@ -243,16 +242,16 @@ public class LocationUtil {
         @Override
         public String toString() {
             return "LocateResult{" +
-                    "id='" + id + '\'' +
-                    ", name='" + name + '\'' +
-                    ", district='" + district + '\'' +
-                    ", adCode='" + adCode + '\'' +
-                    ", longitude='" + longitude + '\'' +
-                    ", latitude='" + latitude + '\'' +
-                    ", address='" + address + '\'' +
-                    ", typeCode='" + typeCode + '\'' +
-                    ", city='" + city + '\'' +
-                    '}';
+                   "id='" + id + '\'' +
+                   ", name='" + name + '\'' +
+                   ", district='" + district + '\'' +
+                   ", adCode='" + adCode + '\'' +
+                   ", longitude='" + longitude + '\'' +
+                   ", latitude='" + latitude + '\'' +
+                   ", address='" + address + '\'' +
+                   ", typeCode='" + typeCode + '\'' +
+                   ", city='" + city + '\'' +
+                   '}';
         }
     }
 }

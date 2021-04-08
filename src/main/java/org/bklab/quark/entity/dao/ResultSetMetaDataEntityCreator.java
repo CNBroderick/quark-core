@@ -102,7 +102,7 @@ public class ResultSetMetaDataEntityCreator {
                 } else {
                     stringBuilder.append('\n').append(space).append("/** ").append('\n');
                     for (String s : split) {
-                        stringBuilder.append(space).append(" * ").append(s).append('\n');
+                        stringBuilder.append(space).append(" * ").append(s).append(" <br/>").append('\n');
                     }
                     stringBuilder.append(space).append(" */\n");
                 }
@@ -120,13 +120,15 @@ public class ResultSetMetaDataEntityCreator {
                 String upperName = getName(metaData.getColumnName(i), true);
                 String comment = columnData.get(metaData.getColumnName(i)).getString("Comment");
 
-                stringBuilder.append(space).append("public ").append(className).append(" set").append(upperName).append("(")
-                        .append(modifier).append(" ").append(name).append(") {\n");
+                stringBuilder.append(space).append("public ").append(className).append(" set").append(upperName)
+                        .append("(").append(modifier).append(" ").append(name).append(") {\n");
                 stringBuilder.append(space).append(space).append("this.").append(name).append(" = ").append(name).append(';').append("\n");
                 stringBuilder.append(space).append(space).append("return this;\n");
                 stringBuilder.append(space).append("}\n\n");
 
-                stringBuilder.append(space).append("public ").append(modifier).append(" get").append(upperName).append("() {\n");
+                stringBuilder.append(space).append("public ").append(modifier)
+                        .append(modifier.equalsIgnoreCase("boolean") ? " is" : " get")
+                        .append(upperName).append("() {\n");
                 stringBuilder.append(space).append(space).append("return ").append(name).append(";\n");
                 stringBuilder.append(space).append("}\n\n");
             }

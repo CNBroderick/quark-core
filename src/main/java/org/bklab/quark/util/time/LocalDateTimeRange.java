@@ -2,9 +2,11 @@ package org.bklab.quark.util.time;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class LocalDateTimeRange {
     private final String shortPattern = "uuuu-MM-dd HH:mm:ss";
@@ -13,6 +15,7 @@ public class LocalDateTimeRange {
 
     private final LocalDateTime min;
     private final LocalDateTime max;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(shortPattern);
 
     public LocalDateTimeRange(LocalDateTime time1, LocalDateTime time2) {
         Objects.requireNonNull(time1, "LocalDateTimeRange min is null");
@@ -37,6 +40,10 @@ public class LocalDateTimeRange {
     }
 
     public LocalDateTimeRange getCoincide(LocalDateTimeRange range) {
+        return Optional.ofNullable(getCoincide0(range)).orElse(range.getCoincide0(this));
+    }
+
+    private LocalDateTimeRange getCoincide0(LocalDateTimeRange range) {
         return min.isBefore(range.min) && range.min.isBefore(max) || min.isBefore(range.max) && range.max.isBefore(max)
                ? new LocalDateTimeRange(new LocalDateTimeRange(min, range.min).max, new LocalDateTimeRange(max, range.max).min) : null;
     }
@@ -47,5 +54,10 @@ public class LocalDateTimeRange {
 
     public LocalDateTime getMax() {
         return max;
+    }
+
+    @Override
+    public String toString() {
+        return formatter.format(min) + "--" + formatter.format(max);
     }
 }

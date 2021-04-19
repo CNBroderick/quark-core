@@ -35,16 +35,66 @@ public class SM4Util {
     private static final int DEFAULT_KEY_SIZE = 128;
     private static final String IV = "4B765072212F74584D3D1862317D195E";
 
-    static {
-        Security.addProvider(new BouncyCastleProvider());
+    public static void main(String[] args) throws Exception {
+        if (args.length < 1) {
+            System.out.println(" iv\t- create iv\n encode\t- command: encode iv password\n decode\t- command: decode iv password");
+            return;
+        }
+
+        String mode = args[0];
+        args = Arrays.copyOfRange(args, 1, args.length);
+
+        if ("iv".equals(mode)) {
+            System.out.println(generateIV());
+            return;
+        }
+
+        if ("encode".equals(mode)) {
+            if (args.length < 2) {
+                System.out.println("command: encode iv password");
+                return;
+            }
+            String iv = args[0];
+            for (int i = 1; i < args.length; i++) {
+                String password = args[i];
+                if (password == null) continue;
+                System.out.println(mode + " " + password);
+                System.out.println(SM4Util.encode(password, args[0]));
+            }
+            return;
+        }
+
+        if ("decode".equals(mode)) {
+            if (args.length < 2) {
+                System.out.println("command: decode iv password");
+                return;
+            }
+            String iv = args[0];
+            for (int i = 1; i < args.length; i++) {
+                String password = args[i];
+                if (password == null) continue;
+                System.out.println(mode + " " + password);
+                System.out.println(SM4Util.decode(password, args[0]));
+                return;
+            }
+        }
+
+        System.out.println("iv\t- create iv\n encode\t- command: encode iv password\n decode\t- command: decode iv password");
     }
 
     private SM4Util() {
 
     }
 
+    private static void checkProvider() {
+        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
+    }
+
     public static String encode(String password) {
         try {
+            checkProvider();
             return Hex.encodeHexString(new SM4Util().encrypt_Ecb_Padding(Hex.decodeHex(IV), password.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException | BadPaddingException | DecoderException | InvalidKeyException
                 | NoSuchPaddingException | NoSuchProviderException | IllegalBlockSizeException | NullPointerException e) {
@@ -55,6 +105,7 @@ public class SM4Util {
 
     public static String decode(String password) {
         try {
+            checkProvider();
             return new String(new SM4Util().decrypt_Ecb_Padding(Hex.decodeHex(IV), Hex.decodeHex(password)));
         } catch (NoSuchAlgorithmException | BadPaddingException | DecoderException | InvalidKeyException
                 | NoSuchPaddingException | NoSuchProviderException | IllegalBlockSizeException | NullPointerException e) {
@@ -64,6 +115,7 @@ public class SM4Util {
 
     public static String encode(String password, String IV) {
         try {
+            checkProvider();
             return Hex.encodeHexString(new SM4Util().encrypt_Ecb_Padding(Hex.decodeHex(IV), password.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException | BadPaddingException | DecoderException | InvalidKeyException
                 | NoSuchPaddingException | NoSuchProviderException | IllegalBlockSizeException | NullPointerException e) {
@@ -81,6 +133,7 @@ public class SM4Util {
 
     public static String decode(String password, String IV) {
         try {
+            checkProvider();
             return new String(new SM4Util().decrypt_Ecb_Padding(Hex.decodeHex(IV), Hex.decodeHex(password)));
         } catch (NoSuchAlgorithmException | BadPaddingException | DecoderException | InvalidKeyException
                 | NoSuchPaddingException | NoSuchProviderException | IllegalBlockSizeException | NullPointerException e) {
@@ -116,6 +169,7 @@ public class SM4Util {
     private static Cipher generateEcbCipher(String algorithmName, int mode, byte[] key)
             throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException,
             InvalidKeyException {
+        checkProvider();
         Cipher cipher = Cipher.getInstance(algorithmName, BouncyCastleProvider.PROVIDER_NAME);
         Key sm4Key = new SecretKeySpec(key, ALGORITHM_NAME);
         cipher.init(mode, sm4Key);
@@ -125,6 +179,7 @@ public class SM4Util {
     private static Cipher generateCbcCipher(String algorithmName, int mode, byte[] key, byte[] iv)
             throws InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
             NoSuchProviderException, NoSuchPaddingException {
+        checkProvider();
         Cipher cipher = Cipher.getInstance(algorithmName, BouncyCastleProvider.PROVIDER_NAME);
         Key sm4Key = new SecretKeySpec(key, ALGORITHM_NAME);
         IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);

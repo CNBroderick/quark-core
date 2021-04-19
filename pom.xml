@@ -62,6 +62,13 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.bklab</groupId>
+            <artifactId>dataq-devops-dependencies</artifactId>
+            <version>1.1.8</version>
+            <classifier>jar-with-dependencies</classifier>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.8</version>
@@ -110,22 +117,6 @@
             <artifactId>commons-codec</artifactId>
             <version>1.15</version>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ronghai</groupId>
-            <artifactId>dataq-devops</artifactId>
-            <version>1.1.8</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.ronghai</groupId>
-                    <artifactId>jtds</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

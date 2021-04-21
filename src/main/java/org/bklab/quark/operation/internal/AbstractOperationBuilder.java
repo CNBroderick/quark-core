@@ -9,6 +9,7 @@ public abstract class AbstractOperationBuilder<E extends AbstractOperationBuilde
 
     private final Map<String, Object> parameterMap = new LinkedHashMap<>();
     private final List<BiConsumer<AbstractOperation, Exception>> exceptionConsumers = new ArrayList<>();
+    private static DefaultBuilder defaultBuilder;
 
     public AbstractOperationBuilder() {
         beforeInitSafely();
@@ -21,6 +22,11 @@ public abstract class AbstractOperationBuilder<E extends AbstractOperationBuilde
         );
     }
 
+    public static DefaultBuilder getDefaultBuilder() {
+        if (defaultBuilder == null) return new DefaultBuilder();
+        return defaultBuilder;
+    }
+
     @Override
     public Map<String, Object> getParameterMap() {
         return parameterMap;
@@ -29,5 +35,10 @@ public abstract class AbstractOperationBuilder<E extends AbstractOperationBuilde
     @Override
     public List<BiConsumer<AbstractOperation, Exception>> getExceptionConsumers() {
         return exceptionConsumers;
+    }
+
+    public static class DefaultBuilder extends AbstractOperationBuilder<DefaultBuilder> {
+        private DefaultBuilder() {
+        }
     }
 }

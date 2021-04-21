@@ -26,6 +26,30 @@ public interface IAbstractOperationBuilder<E extends IAbstractOperationBuilder<E
 
     }
 
+    default E addCallingClass() {
+        StackTraceElement stackTraceElement = findCallingClass(new Throwable().getStackTrace(), 1);
+
+        if (stackTraceElement == null) {
+            getParameterMap().remove("CALLING-OPERATION-POSITION");
+            getParameterMap().remove("CALLING-OPERATION-FILE");
+            getParameterMap().remove("CALLING-OPERATION-LINE");
+            return thisObject();
+        }
+
+        getParameterMap().put("CALLING-OPERATION-POSITION", stackTraceElement.getClassName() + "." + stackTraceElement.getMethodName() + "#" + stackTraceElement.getLineNumber());
+        getParameterMap().put("CALLING-OPERATION-FILE", stackTraceElement.getFileName());
+        getParameterMap().put("CALLING-OPERATION-LINE", stackTraceElement.getLineNumber());
+        return thisObject();
+    }
+
+    private StackTraceElement findCallingClass(StackTraceElement[] stackTraceElements, int position) {
+        if (position < 0 || stackTraceElements.length <= position) return null;
+        StackTraceElement stackTraceElement = stackTraceElements[position];
+        System.out.println(stackTraceElement.getClassName() + "." + stackTraceElement.getMethodName() + "#" + stackTraceElement.getLineNumber());
+        return !getClass().isAssignableFrom(stackTraceElement.getClass())
+               ? stackTraceElement : findCallingClass(stackTraceElements, position + 1);
+    }
+
     default String getParameterMapPrettyJson(OperationContext operationContext) {
         return new GsonJsonObjectUtil(getParameterMap(operationContext)).pretty();
     }
@@ -160,7 +184,7 @@ public interface IAbstractOperationBuilder<E extends IAbstractOperationBuilder<E
     }
 
     default AbstractOperation create(HasAbstractOperation abstractOperation) {
-        return abstractOperation.createAbstractOperation(getParameterMap());
+        return abstractOperation.createAbstractOperation(addCallingClass().getParameterMap());
     }
 
     default E peek(Consumer<E> consumer) {

@@ -36,7 +36,7 @@ public interface IAbstractOperationBuilder<E extends IAbstractOperationBuilder<E
             return thisObject();
         }
 
-        getParameterMap().put("CALLING-OPERATION-POSITION", stackTraceElement.getClassName() + "." + stackTraceElement.getMethodName() + "#" + stackTraceElement.getLineNumber());
+        getParameterMap().put("CALLING-OPERATION-POSITION", stackTraceElement.getClassName() + "." + stackTraceElement.getMethodName() + ":" + stackTraceElement.getLineNumber());
         getParameterMap().put("CALLING-OPERATION-FILE", stackTraceElement.getFileName());
         getParameterMap().put("CALLING-OPERATION-LINE", stackTraceElement.getLineNumber());
         return thisObject();

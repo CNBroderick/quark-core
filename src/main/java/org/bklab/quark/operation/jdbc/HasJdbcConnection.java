@@ -8,29 +8,29 @@ import java.sql.Connection;
 
 public interface HasJdbcConnection {
 
-    default Connection createConnection() {
+    default Connection createConnection() throws Exception {
         return createConnection(false);
     }
 
-    default Connection createConnection(boolean onlyRead) {
+    default Connection createConnection(boolean onlyRead) throws Exception {
         return onlyRead ? createOnlyReadConnection() : createUpdateConnection();
     }
 
-    Connection createUpdateConnection();
+    Connection createUpdateConnection() throws Exception;
 
-    default Connection createOnlyReadConnection() {
+    default Connection createOnlyReadConnection() throws Exception {
         return createUpdateConnection();
     }
 
-    default String createConnectionDataSourceName(boolean onlyRead) {
+    default String createConnectionDataSourceName(boolean onlyRead) throws Exception {
         return onlyRead ? createOnlyReadConnectionDataSourceName() : createUpdateConnectionDataSourceName();
     }
 
-    default String createUpdateConnectionDataSourceName() {
+    default String createUpdateConnectionDataSourceName() throws Exception {
         return "update-connection";
     }
 
-    default String createOnlyReadConnectionDataSourceName() {
+    default String createOnlyReadConnectionDataSourceName() throws Exception {
         return "only-read-connection";
     }
 
@@ -45,11 +45,11 @@ public interface HasJdbcConnection {
         return db;
     }
 
-    default DBAccess createDBAccess() {
+    default DBAccess createDBAccess() throws Exception {
         return createDBAccess(false);
     }
 
-    default DBAccess createDBAccess(boolean onlyRead) {
+    default DBAccess createDBAccess(boolean onlyRead) throws Exception {
         return setDsName(DBAccess.fromConnection(createConnection(onlyRead)), createConnectionDataSourceName(onlyRead));
     }
 }

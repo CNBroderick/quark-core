@@ -78,13 +78,29 @@ public class DailyRollingFileAppender extends FileAppender {
     private long nextCheck = System.currentTimeMillis() - 1;
     private SimpleDateFormat sdf;
 
+    static {
+        // init DataQ Home
+        String dataqHome = System.getenv("DATAQ_HOME");
+        if (dataqHome == null) dataqHome = System.getenv(System.getProperty("user.home") + "/broderick-labs/dataq");
+        System.setProperty("DATAQ_HOME", dataqHome);
+        try {
+            File file = new File(dataqHome);
+            if (!file.exists() && !file.mkdirs()) {
+                System.out.println("创建DataQ文件夹失败：" + dataqHome);
+            } else {
+                System.out.println("使用DataQ文件夹：" + dataqHome);
+            }
+        } catch (Exception e) {
+            System.out.println("创建DataQ文件夹失败：" + dataqHome);
+            e.printStackTrace();
+        }
+    }
+
     /*
      * The default constructor does nothing.
      */
     public DailyRollingFileAppender() {
-        String dataqHome = System.getenv("DATAQ_HOME");
-        if(dataqHome == null) dataqHome = System.getenv(System.getProperty("java.io.tmpdir") + "/Broderick Labs/dataq");
-        System.setProperty("DATAQ_HOME", dataqHome);
+
     }
 
     /*

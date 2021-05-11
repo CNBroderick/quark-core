@@ -64,7 +64,7 @@
         <dependency>
             <groupId>org.bklab</groupId>
             <artifactId>dataq-devops-dependencies</artifactId>
-            <version>1.1.8</version>
+            <version>1.0.0</version>
             <classifier>jar-with-dependencies</classifier>
         </dependency>
 
@@ -173,11 +173,6 @@
 
         <!-- Added to provide logging output as Vaadin uses -->
         <!-- the unbound SLF4J no-operation (NOP) logger implementation -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>2.0.0-alpha1</version>
-        </dependency>
 
     </dependencies>
 

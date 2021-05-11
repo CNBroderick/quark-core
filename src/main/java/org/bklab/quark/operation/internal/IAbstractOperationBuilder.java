@@ -215,4 +215,9 @@ public interface IAbstractOperationBuilder<E extends IAbstractOperationBuilder<E
         }
         if (e != null) LoggerFactory.getLogger(getClass()).error("执行[" + abstractOperation.getContext().getOperationName() + "]失败。", e);
     }
+
+    default E addExceptionConsumer(BiConsumer<AbstractOperation, Exception> exceptionBiConsumer) {
+        getExceptionConsumers().add(exceptionBiConsumer);
+        return thisObject();
+    }
 }

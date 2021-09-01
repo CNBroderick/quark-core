@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class Debug {
+public class ConsoleLogger {
 
     private static final Logger logger = Logger.getAnonymousLogger();
 

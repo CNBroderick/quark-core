@@ -23,17 +23,25 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * public interface IEntityRowMapper<T> {
  * T mapRow(ResultSet resultSet) throws Exception;
  * }
- *
- * @see dataq.core.jdbc.IRowMapper
  */
-public interface IEntityRowMapper<T> extends dataq.core.jdbc.IRowMapper {
+public interface IEntityRowMapper<T> extends Function<ResultSet, T> {
+
     @Override
+    default T apply(ResultSet resultSet) {
+        try {
+            return mapRow(resultSet);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
     T mapRow(ResultSet r) throws Exception;
 
     default LocalDateTime getLocalDateTime(ResultSet r, String filedName) throws Exception {

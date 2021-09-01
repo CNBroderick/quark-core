@@ -13,7 +13,6 @@ package org.bklab.quark.service;
 
 import dataq.core.operation.AbstractOperation;
 import dataq.core.operation.OperationResult;
-import org.bklab.quark.element.HasAbstractOperation;
 import org.bklab.quark.element.HasExceptionConsumers;
 import org.bklab.quark.element.HasSaveListeners;
 

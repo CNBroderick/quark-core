@@ -1,6 +1,6 @@
 package org.bklab.quark.service;
 
-import building.util.file.TemplateFileCleaner;
+import org.bklab.quark.util.file.TemplateFileCleaner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 public class TemporaryFileService {
 
+    public static String ROOT_DIRECTORY_NAME = "bklab";
+
     private final static String separator = File.separator;
     private static final Logger logger = LoggerFactory.getLogger(TemporaryFileService.class);
     private static TemporaryFileService instance;
@@ -24,7 +26,11 @@ public class TemporaryFileService {
     private ScheduledFuture<TemporaryFileService> schedule;
 
     public TemporaryFileService() {
-        File file = new File(System.getProperty("java.io.tmpdir") + separator + "365楼宇租赁管家");
+        this(ROOT_DIRECTORY_NAME);
+    }
+
+    public TemporaryFileService(String rootDirectoryName) {
+        File file = new File(System.getProperty("java.io.tmpdir") + separator + rootDirectoryName);
         if (!file.exists() && !file.mkdirs()) throw new RuntimeException("创建临时文件夹失败");
         this.root = file;
     }
